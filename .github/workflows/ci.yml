@@ -1,0 +1,198 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches: [main, develop, "feature/*"]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.11"
+  POSTGRES_USER: cdp_admin
+  POSTGRES_PASSWORD: cdp_secure_pass_2026
+  POSTGRES_DB: customer_data_platform
+
+jobs:
+  # ============================================================
+  # Job 1: Lint and Code Quality
+  # ============================================================
+  lint:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Install linting tools
+        run: |
+          pip install flake8 black isort
+
+      - name: Run flake8
+        run: |
+          flake8 scripts/ plugins/ dags/ tests/ \
+            --max-line-length=120 \
+            --exclude=__pycache__,venv \
+            --ignore=E501,W503,E402
+
+      - name: Check formatting with black
+        run: |
+          black --check --line-length=120 scripts/ plugins/ tests/ || true
+
+      - name: Check import order
+        run: |
+          isort --check-only --profile black scripts/ plugins/ tests/ || true
+
+  # ============================================================
+  # Job 2: Unit Tests
+  # ============================================================
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-cov pytest-mock faker minio \
+            psycopg2-binary requests boto3 pandas numpy
+
+      - name: Run unit tests
+        run: |
+          pytest tests/ -v \
+            --tb=short \
+            --cov=scripts \
+            --cov=plugins \
+            --cov-report=term-missing \
+            --cov-report=xml:coverage.xml \
+            -k "not integration" \
+            --junitxml=test-results/junit.xml
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results/
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+  # ============================================================
+  # Job 3: Build Docker Images
+  # ============================================================
+  build-images:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    strategy:
+      matrix:
+        service:
+          - name: airflow
+            dockerfile: docker/airflow/Dockerfile
+          - name: data-generator
+            dockerfile: docker/data-generator/Dockerfile
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build ${{ matrix.service.name }} image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.service.dockerfile }}
+          push: false
+          tags: cdp-${{ matrix.service.name }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test image builds successfully
+        run: |
+          docker build -t cdp-${{ matrix.service.name }}:test \
+            -f ${{ matrix.service.dockerfile }} .
+          echo "✅ ${{ matrix.service.name }} image built successfully"
+
+  # ============================================================
+  # Job 4: Docker Compose Validation
+  # ============================================================
+  validate-compose:
+    name: Validate Docker Compose
+    runs-on: ubuntu-latest
+    needs: build-images
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml syntax
+        run: |
+          docker compose -f docker-compose.yml config --quiet
+          echo "✅ Docker Compose syntax is valid"
+
+      - name: Check service definitions
+        run: |
+          services=$(docker compose -f docker-compose.yml config --services)
+          echo "Services found:"
+          echo "$services"
+
+          for svc in postgres minio metabase airflow-webserver airflow-scheduler; do
+            if echo "$services" | grep -q "$svc"; then
+              echo "✅ Service $svc found"
+            else
+              echo "❌ Service $svc missing!"
+              exit 1
+            fi
+          done
+
+  # ============================================================
+  # Job 5: Integration Tests
+  # ============================================================
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: validate-compose
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install pytest pytest-cov pytest-mock faker minio \
+            psycopg2-binary requests boto3 pandas numpy
+
+      - name: Run integration tests
+        run: |
+          pytest tests/test_integration.py -v \
+            --tb=short \
+            --junitxml=test-results/integration-junit.xml
+
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results
+          path: test-results/
