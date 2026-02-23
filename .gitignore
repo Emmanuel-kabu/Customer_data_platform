@@ -1,0 +1,50 @@
+# Docker volumes and data
+postgres_data/
+minio_data/
+metabase_data/
+airflow_logs/
+logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Environment files
+.env.local
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker
+docker-compose.override.yml
+
+# Test outputs
+.pytest_cache/
+.coverage
+htmlcov/
+test-results/
+
+# Temporary files
+*.tmp
+*.bak
+*.log
