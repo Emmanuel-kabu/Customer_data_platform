@@ -176,7 +176,6 @@ class TestRuleLoading:
         assert "total_amount_consistency" in rule_names
 
     def test_rules_sorted_by_severity(self, engine):
-        from dq_rules_engine import Severity
         rules = engine._parse_rules("customers")
         severities = [r.severity.weight for r in rules]
         assert severities == sorted(severities, reverse=True)

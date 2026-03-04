@@ -28,7 +28,6 @@ from io import StringIO, BytesIO
 from typing import Dict, List, Optional, Any
 
 from minio import Minio
-from minio.error import S3Error
 
 from dq_rules_engine import DataQualityRulesEngine, ValidationResult
 
@@ -366,7 +365,7 @@ class IngestionValidator:
             logger.info(f"    Rows: {s['total_rows']} | Clean: {s['clean_rows']} | "
                         f"Quarantined: {s['quarantined_rows']} | Pass: {s['pass_rate']}%")
             if details.get("violation_details"):
-                logger.info(f"    Violations:")
+                logger.info("    Violations:")
                 for v in details["violation_details"][:5]:
                     logger.info(f"      - [{v['severity']}] {v['rule']}: {v['count']} occurrences")
 

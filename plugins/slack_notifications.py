@@ -9,7 +9,6 @@ import logging
 from datetime import datetime
 
 import requests
-from airflow.models import Variable
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +54,6 @@ def send_slack_notification(
     }
 
     emoji = status_emoji.get(status, ":bell:")
-    color = status_color.get(status, "#439FE0")
 
     blocks = [
         {

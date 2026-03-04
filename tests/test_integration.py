@@ -6,7 +6,6 @@ Tests that the complete pipeline can process data correctly.
 import os
 import sys
 import csv
-import pytest
 from unittest.mock import patch, MagicMock
 from io import StringIO
 
