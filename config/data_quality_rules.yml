@@ -1,0 +1,466 @@
+# ============================================================
+# Data Quality Rules Configuration
+# ============================================================
+# Shift-Left DQ: Rules are applied at the EARLIEST point in the
+# data lifecycle — at generation and before MinIO ingestion.
+#
+# Severity levels:
+#   CRITICAL  — Reject entire batch; data cannot proceed
+#   HIGH      — Quarantine failing rows; rest proceed
+#   MEDIUM    — Flag rows with warnings; all proceed
+#   LOW       — Log only; informational
+#
+# Rule types:
+#   not_null, unique, regex, range, enum, length, date_format,
+#   custom_expression, referential, statistical, freshness,
+#   cross_field, completeness, row_count
+# ============================================================
+
+version: "2.0"
+
+global_settings:
+  halt_on_critical: true
+  quarantine_bucket: "quarantine-data"
+  max_quarantine_pct: 15.0        # Reject batch if >15% quarantined
+  enable_profiling: true
+  log_all_violations: true
+  notification_on_failure: true
+  default_date_format: "%Y-%m-%dT%H:%M:%S"
+
+# ============================================================
+# CUSTOMERS
+# ============================================================
+customers:
+  description: "Customer master data quality rules"
+  rules:
+    # --- Schema / Structural ---
+    - name: customer_id_not_null
+      type: not_null
+      column: customer_id
+      severity: CRITICAL
+      description: "Customer ID must not be null"
+
+    - name: customer_id_format
+      type: regex
+      column: customer_id
+      pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+      severity: CRITICAL
+      description: "Customer ID must be a valid UUID v4"
+
+    - name: customer_id_unique
+      type: unique
+      column: customer_id
+      severity: CRITICAL
+      description: "Customer ID must be unique across dataset"
+
+    - name: email_not_null
+      type: not_null
+      column: email
+      severity: HIGH
+      description: "Customer email must not be null"
+
+    - name: email_format
+      type: regex
+      column: email
+      pattern: "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
+      severity: HIGH
+      description: "Email must be a valid email format"
+
+    - name: email_unique
+      type: unique
+      column: email
+      severity: HIGH
+      description: "Email must be unique across dataset"
+
+    - name: first_name_not_null
+      type: not_null
+      column: first_name
+      severity: HIGH
+      description: "First name must not be null"
+
+    - name: last_name_not_null
+      type: not_null
+      column: last_name
+      severity: HIGH
+      description: "Last name must not be null"
+
+    - name: first_name_length
+      type: length
+      column: first_name
+      min_length: 1
+      max_length: 100
+      severity: MEDIUM
+      description: "First name must be 1-100 characters"
+
+    - name: last_name_length
+      type: length
+      column: last_name
+      min_length: 1
+      max_length: 100
+      severity: MEDIUM
+      description: "Last name must be 1-100 characters"
+
+    # --- Value Domain ---
+    - name: country_enum
+      type: enum
+      column: country
+      allowed_values: ["US", "CA", "GB", "DE", "FR", "AU", "JP", "BR", "IN", "MX"]
+      severity: MEDIUM
+      description: "Country must be a supported ISO country code"
+
+    - name: state_not_empty
+      type: not_null
+      column: state
+      severity: MEDIUM
+      description: "State must not be null"
+
+    - name: zip_code_format
+      type: regex
+      column: zip_code
+      pattern: "^\\d{5}(-\\d{4})?$"
+      severity: MEDIUM
+      description: "ZIP code must be valid US format (XXXXX or XXXXX-XXXX)"
+
+    # --- Temporal ---
+    - name: dob_not_null
+      type: not_null
+      column: date_of_birth
+      severity: MEDIUM
+      description: "Date of birth should not be null"
+
+    - name: dob_format
+      type: date_format
+      column: date_of_birth
+      format: "%Y-%m-%d"
+      severity: MEDIUM
+      description: "Date of birth must be YYYY-MM-DD"
+
+    - name: dob_range
+      type: date_range
+      column: date_of_birth
+      min_date: "1920-01-01"
+      max_date: "2008-12-31"
+      severity: HIGH
+      description: "Customers must be between 18 and 106 years old"
+
+    - name: registration_date_not_null
+      type: not_null
+      column: registration_date
+      severity: HIGH
+      description: "Registration date must not be null"
+
+    - name: registration_date_not_future
+      type: date_not_future
+      column: registration_date
+      severity: HIGH
+      description: "Registration date must not be in the future"
+
+    # --- Cross-field ---
+    - name: registration_after_birth
+      type: cross_field
+      expression: "registration_date > date_of_birth"
+      severity: HIGH
+      description: "Registration date must be after date of birth"
+
+    # --- Statistical ---
+    - name: customer_row_count
+      type: row_count
+      min_rows: 1
+      severity: CRITICAL
+      description: "Dataset must contain at least 1 customer"
+
+    - name: customer_completeness
+      type: completeness
+      columns: ["customer_id", "first_name", "last_name", "email"]
+      min_completeness_pct: 95.0
+      severity: HIGH
+      description: "Critical columns must be >= 95% complete"
+
+# ============================================================
+# PRODUCTS
+# ============================================================
+products:
+  description: "Product catalog data quality rules"
+  rules:
+    - name: product_id_not_null
+      type: not_null
+      column: product_id
+      severity: CRITICAL
+      description: "Product ID must not be null"
+
+    - name: product_id_format
+      type: regex
+      column: product_id
+      pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+      severity: CRITICAL
+      description: "Product ID must be a valid UUID v4"
+
+    - name: product_id_unique
+      type: unique
+      column: product_id
+      severity: CRITICAL
+      description: "Product ID must be unique"
+
+    - name: product_name_not_null
+      type: not_null
+      column: product_name
+      severity: HIGH
+      description: "Product name must not be null"
+
+    - name: product_name_length
+      type: length
+      column: product_name
+      min_length: 3
+      max_length: 255
+      severity: MEDIUM
+      description: "Product name must be 3-255 characters"
+
+    - name: category_not_null
+      type: not_null
+      column: category
+      severity: HIGH
+      description: "Product category must not be null"
+
+    - name: category_enum
+      type: enum
+      column: category
+      allowed_values: ["Electronics", "Clothing", "Home & Garden", "Books & Media", "Health & Beauty"]
+      severity: HIGH
+      description: "Category must be from the approved list"
+
+    - name: sub_category_not_null
+      type: not_null
+      column: sub_category
+      severity: MEDIUM
+      description: "Sub-category must not be null"
+
+    - name: brand_not_null
+      type: not_null
+      column: brand
+      severity: MEDIUM
+      description: "Brand must not be null"
+
+    - name: unit_price_not_null
+      type: not_null
+      column: unit_price
+      severity: CRITICAL
+      description: "Unit price must not be null"
+
+    - name: unit_price_positive
+      type: range
+      column: unit_price
+      min_value: 0.01
+      max_value: 99999.99
+      severity: CRITICAL
+      description: "Unit price must be between $0.01 and $99,999.99"
+
+    - name: cost_price_not_null
+      type: not_null
+      column: cost_price
+      severity: HIGH
+      description: "Cost price must not be null"
+
+    - name: cost_price_positive
+      type: range
+      column: cost_price
+      min_value: 0.00
+      max_value: 99999.99
+      severity: HIGH
+      description: "Cost price must be non-negative"
+
+    - name: cost_less_than_price
+      type: cross_field
+      expression: "cost_price <= unit_price"
+      severity: HIGH
+      description: "Cost price must not exceed unit price"
+
+    - name: stock_quantity_range
+      type: range
+      column: stock_quantity
+      min_value: 0
+      max_value: 100000
+      severity: MEDIUM
+      description: "Stock quantity must be between 0 and 100,000"
+
+    - name: supplier_not_null
+      type: not_null
+      column: supplier
+      severity: MEDIUM
+      description: "Supplier must not be null"
+
+    - name: product_row_count
+      type: row_count
+      min_rows: 1
+      severity: CRITICAL
+      description: "Dataset must contain at least 1 product"
+
+    - name: product_completeness
+      type: completeness
+      columns: ["product_id", "product_name", "category", "unit_price"]
+      min_completeness_pct: 98.0
+      severity: HIGH
+      description: "Critical columns must be >= 98% complete"
+
+# ============================================================
+# SALES
+# ============================================================
+sales:
+  description: "Sales transaction data quality rules"
+  rules:
+    - name: sale_id_not_null
+      type: not_null
+      column: sale_id
+      severity: CRITICAL
+      description: "Sale ID must not be null"
+
+    - name: sale_id_format
+      type: regex
+      column: sale_id
+      pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+      severity: CRITICAL
+      description: "Sale ID must be a valid UUID v4"
+
+    - name: sale_id_unique
+      type: unique
+      column: sale_id
+      severity: CRITICAL
+      description: "Sale ID must be unique"
+
+    - name: customer_id_not_null
+      type: not_null
+      column: customer_id
+      severity: CRITICAL
+      description: "Customer ID reference must not be null"
+
+    - name: customer_id_format
+      type: regex
+      column: customer_id
+      pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+      severity: HIGH
+      description: "Customer ID reference must be a valid UUID v4"
+
+    - name: product_id_not_null
+      type: not_null
+      column: product_id
+      severity: CRITICAL
+      description: "Product ID reference must not be null"
+
+    - name: product_id_format
+      type: regex
+      column: product_id
+      pattern: "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+      severity: HIGH
+      description: "Product ID reference must be a valid UUID v4"
+
+    - name: quantity_not_null
+      type: not_null
+      column: quantity
+      severity: CRITICAL
+      description: "Quantity must not be null"
+
+    - name: quantity_positive
+      type: range
+      column: quantity
+      min_value: 1
+      max_value: 10000
+      severity: CRITICAL
+      description: "Quantity must be at least 1"
+
+    - name: unit_price_positive
+      type: range
+      column: unit_price
+      min_value: 0.01
+      max_value: 99999.99
+      severity: CRITICAL
+      description: "Unit price must be positive"
+
+    - name: total_amount_not_null
+      type: not_null
+      column: total_amount
+      severity: CRITICAL
+      description: "Total amount must not be null"
+
+    - name: total_amount_positive
+      type: range
+      column: total_amount
+      min_value: 0.01
+      max_value: 9999999.99
+      severity: CRITICAL
+      description: "Total amount must be positive"
+
+    - name: total_amount_consistency
+      type: cross_field
+      expression: "abs(total_amount - (unit_price * quantity)) < 0.02"
+      severity: HIGH
+      description: "Total amount must equal unit_price * quantity (within rounding)"
+
+    - name: discount_percent_range
+      type: range
+      column: discount_percent
+      min_value: 0
+      max_value: 100
+      severity: HIGH
+      description: "Discount must be between 0-100%"
+
+    - name: sale_date_not_null
+      type: not_null
+      column: sale_date
+      severity: CRITICAL
+      description: "Sale date must not be null"
+
+    - name: sale_date_not_future
+      type: date_not_future
+      column: sale_date
+      severity: HIGH
+      description: "Sale date must not be in the future"
+
+    - name: sale_date_reasonable
+      type: date_range
+      column: sale_date
+      min_date: "2020-01-01"
+      max_date: "2030-12-31"
+      severity: MEDIUM
+      description: "Sale date must be within platform operational period"
+
+    - name: payment_method_enum
+      type: enum
+      column: payment_method
+      allowed_values: ["Credit Card", "Debit Card", "PayPal", "Bank Transfer", "Cash", "Crypto"]
+      severity: HIGH
+      description: "Payment method must be from approved list"
+
+    - name: store_location_not_null
+      type: not_null
+      column: store_location
+      severity: MEDIUM
+      description: "Store location should not be null"
+
+    # --- Referential checks (validated against co-generated data) ---
+    - name: customer_id_referential
+      type: referential
+      column: customer_id
+      reference_entity: customers
+      reference_column: customer_id
+      severity: HIGH
+      description: "Customer ID must exist in customers dataset"
+
+    - name: product_id_referential
+      type: referential
+      column: product_id
+      reference_entity: products
+      reference_column: product_id
+      severity: HIGH
+      description: "Product ID must exist in products dataset"
+
+    - name: sales_row_count
+      type: row_count
+      min_rows: 1
+      severity: CRITICAL
+      description: "Dataset must contain at least 1 sale"
+
+    - name: sales_completeness
+      type: completeness
+      columns: ["sale_id", "customer_id", "product_id", "quantity", "unit_price", "total_amount", "sale_date"]
+      min_completeness_pct: 99.0
+      severity: HIGH
+      description: "Critical sales columns must be >= 99% complete"

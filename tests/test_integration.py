@@ -64,7 +64,7 @@ class TestEndToEndDataFlow:
 
         # A row from generator
         row = {
-            "customer_id": "CUST-00001",
+            "customer_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
             "first_name": "John",
             "last_name": "Doe",
             "email": "john@test.com"

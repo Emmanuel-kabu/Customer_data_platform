@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.empty import EmptyOperator
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.dates import days_ago
 
 sys.path.insert(0, "/opt/airflow/scripts")
@@ -97,4 +98,10 @@ with DAG(
         python_callable=generate_and_upload,
     )
 
-    start >> generate >> end
+    trigger_sales_pipeline = TriggerDagRunOperator(
+        task_id="trigger_sales_pipeline",
+        trigger_dag_id="sales_data_pipeline",
+        wait_for_completion=False,
+    )
+
+    start >> generate >> trigger_sales_pipeline >> end

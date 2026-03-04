@@ -1,0 +1,220 @@
+version: "1.0"
+domain: "customer_data_platform"
+updated_at: "2026-02-26"
+
+questions:
+  - id: EXE-001
+    dashboard: "Executive Command Center"
+    question: "What is our revenue, order volume, AOV, and active customers right now?"
+    metric_name: "executive_kpi_snapshot"
+    source_model: "analytics.executive_kpis"
+    owner: "Business Leadership"
+    sla: "Daily"
+
+  - id: EXE-002
+    dashboard: "Executive Command Center"
+    question: "How are revenue and gross margin trending month over month?"
+    metric_name: "revenue_margin_trend"
+    source_model: "analytics.revenue_profit_trends"
+    owner: "Finance"
+    sla: "Daily"
+
+  - id: EXE-003
+    dashboard: "Executive Command Center"
+    question: "Which states are driving the most revenue and orders?"
+    metric_name: "geo_revenue_leaderboard"
+    source_model: "analytics.geo_performance"
+    owner: "Commercial"
+    sla: "Daily"
+
+  - id: EXE-004
+    dashboard: "Executive Command Center"
+    question: "Is pipeline reliability healthy enough for decision-making?"
+    metric_name: "pipeline_reliability"
+    source_model: "analytics.pipeline_health"
+    owner: "Data Platform"
+    sla: "Hourly"
+
+  - id: FIN-001
+    dashboard: "Revenue and Profit Intelligence"
+    question: "What are monthly revenue, COGS, gross profit, and margin?"
+    metric_name: "monthly_pnl_trend"
+    source_model: "analytics.revenue_profit_trends"
+    owner: "Finance"
+    sla: "Daily"
+
+  - id: FIN-002
+    dashboard: "Revenue and Profit Intelligence"
+    question: "Which categories contribute the most gross profit?"
+    metric_name: "category_margin_mix"
+    source_model: "analytics.revenue_profit_trends"
+    owner: "Finance"
+    sla: "Daily"
+
+  - id: FIN-003
+    dashboard: "Revenue and Profit Intelligence"
+    question: "How do discounts impact order value and net revenue?"
+    metric_name: "discount_effectiveness"
+    source_model: "analytics.discount_effectiveness"
+    owner: "Pricing"
+    sla: "Daily"
+
+  - id: FIN-004
+    dashboard: "Revenue and Profit Intelligence"
+    question: "What is the payment-method mix and revenue split?"
+    metric_name: "payment_mix"
+    source_model: "analytics.payment_mix"
+    owner: "Finance Ops"
+    sla: "Daily"
+
+  - id: FIN-005
+    dashboard: "Revenue and Profit Intelligence"
+    question: "How do revenue, sales, and total units sold trend by day, week, month, quarter, and year?"
+    metric_name: "revenue_sales_units_by_time_grain"
+    source_model: "analytics.revenue_sales_time_grains"
+    owner: "Finance"
+    sla: "Daily"
+
+  - id: FIN-006
+    dashboard: "Revenue and Profit Intelligence"
+    question: "How does product-category performance compare across each reporting grain?"
+    metric_name: "category_performance_by_time_grain"
+    source_model: "analytics.revenue_sales_time_grains"
+    owner: "Merchandising"
+    sla: "Daily"
+
+  - id: FIN-007
+    dashboard: "Revenue and Profit Intelligence"
+    question: "What is total net revenue for the selected reporting grain and date range?"
+    metric_name: "revenue_kpi_by_time_grain"
+    source_model: "analytics.revenue_sales_time_grains"
+    owner: "Finance"
+    sla: "Daily"
+
+  - id: FIN-008
+    dashboard: "Revenue and Profit Intelligence"
+    question: "How many total sales were completed for the selected reporting grain and date range?"
+    metric_name: "sales_kpi_by_time_grain"
+    source_model: "analytics.revenue_sales_time_grains"
+    owner: "Finance Ops"
+    sla: "Daily"
+
+  - id: FIN-009
+    dashboard: "Revenue and Profit Intelligence"
+    question: "How many total units were sold for the selected reporting grain and date range?"
+    metric_name: "units_sold_kpi_by_time_grain"
+    source_model: "analytics.revenue_sales_time_grains"
+    owner: "Commercial Analytics"
+    sla: "Daily"
+
+  - id: FIN-010
+    dashboard: "Revenue and Profit Intelligence"
+    question: "What is total gross profit for the selected reporting grain and date range?"
+    metric_name: "gross_profit_kpi_by_time_grain"
+    source_model: "analytics.revenue_sales_time_grains"
+    owner: "Finance"
+    sla: "Daily"
+
+  - id: CUS-001
+    dashboard: "Customer Growth and Retention"
+    question: "Who are our highest-value customers and how often do they buy?"
+    metric_name: "customer_ltv"
+    source_model: "analytics.customer_ltv"
+    owner: "CRM"
+    sla: "Daily"
+
+  - id: CUS-002
+    dashboard: "Customer Growth and Retention"
+    question: "How do customer cohorts retain over time?"
+    metric_name: "cohort_retention"
+    source_model: "analytics.customer_retention_cohorts"
+    owner: "Growth"
+    sla: "Daily"
+
+  - id: CUS-003
+    dashboard: "Customer Growth and Retention"
+    question: "How is customer value distributed by segment?"
+    metric_name: "customer_segment_distribution"
+    source_model: "analytics.customer_ltv"
+    owner: "CRM"
+    sla: "Daily"
+
+  - id: CUS-004
+    dashboard: "Customer Growth and Retention"
+    question: "Which geographies have the highest repeat customer rate?"
+    metric_name: "geo_repeat_rate"
+    source_model: "analytics.geo_performance"
+    owner: "Commercial"
+    sla: "Daily"
+
+  - id: PRD-001
+    dashboard: "Product and Inventory Intelligence"
+    question: "What are the top products by revenue, units, and order penetration?"
+    metric_name: "product_performance"
+    source_model: "analytics.product_performance"
+    owner: "Merchandising"
+    sla: "Daily"
+
+  - id: PRD-002
+    dashboard: "Product and Inventory Intelligence"
+    question: "Which SKUs are overstocked or at stockout risk?"
+    metric_name: "inventory_health"
+    source_model: "analytics.inventory_health"
+    owner: "Supply Chain"
+    sla: "Daily"
+
+  - id: PRD-003
+    dashboard: "Product and Inventory Intelligence"
+    question: "How does category demand evolve over time?"
+    metric_name: "category_demand_trend"
+    source_model: "analytics.revenue_profit_trends"
+    owner: "Merchandising"
+    sla: "Daily"
+
+  - id: OPS-001
+    dashboard: "Operations and Data Quality"
+    question: "Are pipeline runs succeeding within expected runtime?"
+    metric_name: "pipeline_runtime_status"
+    source_model: "analytics.pipeline_health"
+    owner: "Data Platform"
+    sla: "Hourly"
+
+  - id: OPS-002
+    dashboard: "Operations and Data Quality"
+    question: "What are the latest DQ pass rates by entity?"
+    metric_name: "dq_pass_rate"
+    source_model: "analytics.dq_trends"
+    owner: "Data Governance"
+    sla: "Hourly"
+
+  - id: OPS-003
+    dashboard: "Operations and Data Quality"
+    question: "Where are pre-load rejections concentrated?"
+    metric_name: "preload_rejection_hotspots"
+    source_model: "analytics.pre_load_rejection_summary"
+    owner: "Data Governance"
+    sla: "Hourly"
+
+  - id: FRC-001
+    dashboard: "Forecasting and Planning"
+    question: "What are projected daily revenue values for the next 30 days?"
+    metric_name: "next_30d_revenue_forecast"
+    source_model: "analytics.revenue_orders_forecast_30d"
+    owner: "Finance Planning"
+    sla: "Daily"
+
+  - id: FRC-002
+    dashboard: "Forecasting and Planning"
+    question: "What are projected daily order counts for the next 30 days?"
+    metric_name: "next_30d_orders_forecast"
+    source_model: "analytics.revenue_orders_forecast_30d"
+    owner: "Commercial Planning"
+    sla: "Daily"
+
+  - id: FRC-003
+    dashboard: "Forecasting and Planning"
+    question: "How does the next 30-day forecast compare to the most recent 30-day actual baseline?"
+    metric_name: "forecast_vs_baseline"
+    source_model: "analytics.revenue_orders_forecast_summary"
+    owner: "Executive Office"
+    sla: "Daily"

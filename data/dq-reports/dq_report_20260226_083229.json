@@ -1,0 +1,469 @@
+{
+  "report_id": "dq-report-20260226_083226",
+  "timestamp": "2026-02-26T08:32:29.510744",
+  "version": "2.0",
+  "approach": "shift-left",
+  "uploaded": true,
+  "overall_status": "PASS",
+  "entities": {
+    "customers": {
+      "summary": {
+        "entity": "customers",
+        "total_rows": 1000,
+        "total_rules": 21,
+        "rules_evaluated": 19002,
+        "clean_rows": 1000,
+        "quarantined_rows": 0,
+        "warnings_count": 0,
+        "pass_rate": 100.0,
+        "quarantine_rate": 0.0,
+        "batch_halted": false,
+        "halt_reason": "",
+        "violations_by_severity": {},
+        "violations_by_rule": {},
+        "started_at": "2026-02-26T08:32:26.881386",
+        "completed_at": "2026-02-26T08:32:27.105192"
+      },
+      "profile": {
+        "row_count": 1000,
+        "column_count": 13,
+        "columns": {
+          "customer_id": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 1000,
+            "uniqueness_pct": 100.0,
+            "min_length": 36,
+            "max_length": 36,
+            "avg_length": 36.0
+          },
+          "first_name": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 334,
+            "uniqueness_pct": 33.4,
+            "min_length": 3,
+            "max_length": 11,
+            "avg_length": 6.1
+          },
+          "last_name": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 503,
+            "uniqueness_pct": 50.3,
+            "min_length": 2,
+            "max_length": 10,
+            "avg_length": 6.1
+          },
+          "email": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 1000,
+            "uniqueness_pct": 100.0,
+            "min_length": 15,
+            "max_length": 32,
+            "avg_length": 21.8
+          },
+          "phone": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 1000,
+            "uniqueness_pct": 100.0,
+            "min": 2073676209.0,
+            "max": 9942565346.0,
+            "mean": 5950471163.8641
+          },
+          "address": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 1000,
+            "uniqueness_pct": 100.0,
+            "min_length": 11,
+            "max_length": 36,
+            "avg_length": 22.2
+          },
+          "city": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 970,
+            "uniqueness_pct": 97.0,
+            "min_length": 6,
+            "max_length": 22,
+            "avg_length": 12.1
+          },
+          "state": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 59,
+            "uniqueness_pct": 5.9,
+            "min_length": 2,
+            "max_length": 2,
+            "avg_length": 2.0
+          },
+          "country": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 1,
+            "uniqueness_pct": 0.1,
+            "min_length": 2,
+            "max_length": 2,
+            "avg_length": 2.0
+          },
+          "zip_code": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 995,
+            "uniqueness_pct": 99.5,
+            "min": 513.0,
+            "max": 99892.0,
+            "mean": 49998.187
+          },
+          "date_of_birth": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 979,
+            "uniqueness_pct": 97.9,
+            "min_length": 10,
+            "max_length": 10,
+            "avg_length": 10.0
+          },
+          "registration_date": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 1000,
+            "uniqueness_pct": 100.0,
+            "min_length": 26,
+            "max_length": 26,
+            "avg_length": 26.0
+          },
+          "row_hash": {
+            "non_null_count": 1000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 1000,
+            "uniqueness_pct": 100.0,
+            "min_length": 32,
+            "max_length": 32,
+            "avg_length": 32.0
+          }
+        }
+      },
+      "upload_stats": {
+        "clean_uploaded": 1000,
+        "quarantined_uploaded": 0,
+        "skipped": false
+      },
+      "violation_details": []
+    },
+    "products": {
+      "summary": {
+        "entity": "products",
+        "total_rows": 50,
+        "total_rules": 18,
+        "rules_evaluated": 802,
+        "clean_rows": 50,
+        "quarantined_rows": 0,
+        "warnings_count": 0,
+        "pass_rate": 100.0,
+        "quarantine_rate": 0.0,
+        "batch_halted": false,
+        "halt_reason": "",
+        "violations_by_severity": {},
+        "violations_by_rule": {},
+        "started_at": "2026-02-26T08:32:27.105469",
+        "completed_at": "2026-02-26T08:32:27.108710"
+      },
+      "profile": {
+        "row_count": 50,
+        "column_count": 10,
+        "columns": {
+          "product_id": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 100.0,
+            "min_length": 36,
+            "max_length": 36,
+            "avg_length": 36.0
+          },
+          "product_name": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 100.0,
+            "min_length": 23,
+            "max_length": 37,
+            "avg_length": 29.7
+          },
+          "category": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 5,
+            "uniqueness_pct": 10.0,
+            "min_length": 8,
+            "max_length": 15,
+            "avg_length": 12.0
+          },
+          "sub_category": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 23,
+            "uniqueness_pct": 46.0,
+            "min_length": 4,
+            "max_length": 13,
+            "avg_length": 8.3
+          },
+          "brand": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 22,
+            "uniqueness_pct": 44.0,
+            "min_length": 6,
+            "max_length": 13,
+            "avg_length": 9.7
+          },
+          "unit_price": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 100.0,
+            "min": 16.14,
+            "max": 2281.53,
+            "mean": 410.4036
+          },
+          "cost_price": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 100.0,
+            "min": 7.26,
+            "max": 1254.84,
+            "mean": 212.2504
+          },
+          "supplier": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 100.0,
+            "min_length": 8,
+            "max_length": 27,
+            "avg_length": 14.7
+          },
+          "stock_quantity": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 48,
+            "uniqueness_pct": 96.0,
+            "min": 12.0,
+            "max": 495.0,
+            "mean": 262.7
+          },
+          "row_hash": {
+            "non_null_count": 50,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 100.0,
+            "min_length": 32,
+            "max_length": 32,
+            "avg_length": 32.0
+          }
+        }
+      },
+      "upload_stats": {
+        "clean_uploaded": 50,
+        "quarantined_uploaded": 0,
+        "skipped": false
+      },
+      "violation_details": []
+    },
+    "sales": {
+      "summary": {
+        "entity": "sales",
+        "total_rows": 5000,
+        "total_rules": 23,
+        "rules_evaluated": 105002,
+        "clean_rows": 5000,
+        "quarantined_rows": 0,
+        "warnings_count": 0,
+        "pass_rate": 100.0,
+        "quarantine_rate": 0.0,
+        "batch_halted": false,
+        "halt_reason": "",
+        "violations_by_severity": {},
+        "violations_by_rule": {},
+        "started_at": "2026-02-26T08:32:27.109011",
+        "completed_at": "2026-02-26T08:32:29.404692"
+      },
+      "profile": {
+        "row_count": 5000,
+        "column_count": 13,
+        "columns": {
+          "sale_id": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 5000,
+            "uniqueness_pct": 100.0,
+            "min_length": 36,
+            "max_length": 36,
+            "avg_length": 36.0
+          },
+          "customer_id": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 996,
+            "uniqueness_pct": 19.92,
+            "min_length": 36,
+            "max_length": 36,
+            "avg_length": 36.0
+          },
+          "product_id": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 1.0,
+            "min_length": 36,
+            "max_length": 36,
+            "avg_length": 36.0
+          },
+          "product_name": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 1.0,
+            "min_length": 23,
+            "max_length": 37,
+            "avg_length": 29.7
+          },
+          "category": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 5,
+            "uniqueness_pct": 0.1,
+            "min_length": 8,
+            "max_length": 15,
+            "avg_length": 12.0
+          },
+          "quantity": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 10,
+            "uniqueness_pct": 0.2,
+            "min": 1.0,
+            "max": 10.0,
+            "mean": 5.5458
+          },
+          "unit_price": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 50,
+            "uniqueness_pct": 1.0,
+            "min": 16.14,
+            "max": 2281.53,
+            "mean": 408.6853
+          },
+          "total_amount": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 500,
+            "uniqueness_pct": 10.0,
+            "min": 16.14,
+            "max": 22815.3,
+            "mean": 2246.4577
+          },
+          "discount_percent": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 7,
+            "uniqueness_pct": 0.14,
+            "min": 0.0,
+            "max": 30.0,
+            "mean": 15.165
+          },
+          "sale_date": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 5000,
+            "uniqueness_pct": 100.0,
+            "min_length": 26,
+            "max_length": 26,
+            "avg_length": 26.0
+          },
+          "payment_method": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 6,
+            "uniqueness_pct": 0.12,
+            "min_length": 4,
+            "max_length": 13,
+            "avg_length": 8.3
+          },
+          "store_location": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 12,
+            "uniqueness_pct": 0.24,
+            "min_length": 10,
+            "max_length": 16,
+            "avg_length": 12.3
+          },
+          "row_hash": {
+            "non_null_count": 5000,
+            "null_count": 0,
+            "null_pct": 0.0,
+            "unique_count": 5000,
+            "uniqueness_pct": 100.0,
+            "min_length": 32,
+            "max_length": 32,
+            "avg_length": 32.0
+          }
+        }
+      },
+      "upload_stats": {
+        "clean_uploaded": 5000,
+        "quarantined_uploaded": 0,
+        "skipped": false
+      },
+      "violation_details": []
+    }
+  },
+  "totals": {
+    "total_rows": 6050,
+    "total_clean": 6050,
+    "total_quarantined": 0,
+    "overall_pass_rate": 100.0
+  }
+}

@@ -1,0 +1,418 @@
+# ============================================================
+# Schema Contracts — Pre-Load Validation Blueprints
+# ============================================================
+# Defines the EXACT contract between CSV source data and PostgreSQL
+# staging tables. Every column, its type, constraints, and
+# acceptable transformations are declared here.
+#
+# This is the single source of truth for pre-load validation.
+# Any deviation triggers validation failure BEFORE data touches
+# the database.
+#
+# Type mappings:
+#   uuid       → UUID v4 format (xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx)
+#   varchar    → String with max_length constraint
+#   integer    → Whole number within optional range
+#   decimal    → Fixed-point number with precision/scale
+#   date       → ISO date (YYYY-MM-DD)
+#   timestamp  → ISO timestamp (YYYY-MM-DDTHH:MM:SS)
+#   boolean    → True/False/1/0/yes/no
+#   text       → Unbounded string
+#
+# Constraint types:
+#   not_null          → Column must have a value
+#   unique            → Values must be unique within batch
+#   primary_key       → not_null + unique (logical PK in source)
+#   foreign_key       → Must reference valid ID in another entity
+#   check             → Custom SQL-like expression
+#   enum              → Value from allowed list
+#   regex             → Must match pattern
+#   range             → Numeric min/max
+#   length            → String length min/max
+# ============================================================
+
+version: "1.0"
+
+global_settings:
+  strict_mode: true                # Enforce contract checks and log schema drift
+  allow_extra_columns: false       # Extra CSV columns are flagged and ignored (no batch halt)
+  allow_missing_optional: true     # Optional columns can be absent
+  max_type_cast_errors_pct: 5.0    # Reject batch if >5% type cast failures
+  log_all_validations: true
+  date_format: "%Y-%m-%d"
+  timestamp_format: "%Y-%m-%dT%H:%M:%S"
+  uuid_version: 4
+
+# ============================================================
+# CUSTOMERS — staging.customers_raw
+# ============================================================
+customers:
+  target_table: "staging.customers_raw"
+  source_id_column: "customer_id"    # CSV column mapped to source_id in staging
+  description: "Customer master data contract"
+
+  columns:
+    customer_id:
+      target_column: "source_id"
+      type: uuid
+      constraints:
+        - primary_key
+        - not_null
+      description: "Unique customer identifier (UUID v4)"
+
+    first_name:
+      type: varchar
+      max_length: 100
+      constraints:
+        - not_null
+      coerce:
+        - trim
+        - title_case
+      description: "Customer first name"
+
+    last_name:
+      type: varchar
+      max_length: 100
+      constraints:
+        - not_null
+      coerce:
+        - trim
+        - title_case
+      description: "Customer last name"
+
+    email:
+      type: varchar
+      max_length: 255
+      constraints:
+        - not_null
+        - unique
+        - regex: "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"
+      coerce:
+        - trim
+        - lowercase
+      description: "Customer email address"
+
+    phone:
+      type: varchar
+      max_length: 50
+      constraints: []
+      nullable: true
+      description: "Phone number (optional)"
+
+    address:
+      type: varchar
+      max_length: 500
+      constraints: []
+      nullable: true
+      coerce:
+        - trim
+      description: "Street address"
+
+    city:
+      type: varchar
+      max_length: 100
+      constraints: []
+      nullable: true
+      coerce:
+        - trim
+      description: "City"
+
+    state:
+      type: varchar
+      max_length: 100
+      constraints: []
+      nullable: true
+      coerce:
+        - trim
+      description: "State or province"
+
+    country:
+      type: varchar
+      max_length: 100
+      constraints:
+        - not_null
+        - enum: ["US", "CA", "GB", "DE", "FR", "AU", "JP", "BR", "IN", "MX"]
+      coerce:
+        - trim
+        - uppercase
+      description: "ISO country code"
+
+    zip_code:
+      type: varchar
+      max_length: 20
+      constraints:
+        - regex: "^\\d{5}(-\\d{4})?$"
+      nullable: true
+      coerce:
+        - trim
+      description: "US ZIP code"
+
+    date_of_birth:
+      type: date
+      format: "%Y-%m-%d"
+      constraints:
+        - range:
+            min: "1920-01-01"
+            max: "2008-12-31"
+      nullable: true
+      description: "Date of birth (must be 18-106 years old)"
+
+    registration_date:
+      type: timestamp
+      format: "%Y-%m-%dT%H:%M:%S"
+      constraints:
+        - not_null
+        - not_future
+      description: "Registration timestamp (must not be in future)"
+
+    row_hash:
+      type: varchar
+      max_length: 64
+      constraints: []
+      nullable: true
+      description: "MD5 hash for incremental loading"
+
+  # Cross-column validation rules
+  cross_validations:
+    - name: "registration_after_birth"
+      expression: "registration_date > date_of_birth"
+      severity: HIGH
+      description: "Registration must be after date of birth"
+
+# ============================================================
+# PRODUCTS — staging.products_raw
+# ============================================================
+products:
+  target_table: "staging.products_raw"
+  source_id_column: "product_id"
+  description: "Product catalog data contract"
+
+  columns:
+    product_id:
+      target_column: "source_id"
+      type: uuid
+      constraints:
+        - primary_key
+        - not_null
+      description: "Unique product identifier (UUID v4)"
+
+    product_name:
+      type: varchar
+      max_length: 255
+      constraints:
+        - not_null
+        - length:
+            min: 3
+            max: 255
+      coerce:
+        - trim
+      description: "Product display name"
+
+    category:
+      type: varchar
+      max_length: 100
+      constraints:
+        - not_null
+        - enum: ["Electronics", "Clothing", "Home & Garden", "Books & Media", "Health & Beauty"]
+      description: "Product category"
+
+    sub_category:
+      type: varchar
+      max_length: 100
+      constraints: []
+      nullable: true
+      description: "Product sub-category"
+
+    brand:
+      type: varchar
+      max_length: 100
+      constraints: []
+      nullable: true
+      coerce:
+        - trim
+      description: "Product brand"
+
+    unit_price:
+      type: decimal
+      precision: 12
+      scale: 2
+      constraints:
+        - not_null
+        - range:
+            min: 0.01
+            max: 99999.99
+      description: "Selling price per unit"
+
+    cost_price:
+      type: decimal
+      precision: 12
+      scale: 2
+      constraints:
+        - not_null
+        - range:
+            min: 0.00
+            max: 99999.99
+      description: "Purchase/cost price per unit"
+
+    supplier:
+      type: varchar
+      max_length: 200
+      constraints: []
+      nullable: true
+      coerce:
+        - trim
+      description: "Supplier company name"
+
+    stock_quantity:
+      type: integer
+      constraints:
+        - range:
+            min: 0
+            max: 100000
+      nullable: true
+      description: "Current stock quantity"
+
+    row_hash:
+      type: varchar
+      max_length: 64
+      constraints: []
+      nullable: true
+      description: "MD5 hash for incremental loading"
+
+  cross_validations:
+    - name: "cost_leq_price"
+      expression: "cost_price <= unit_price"
+      severity: HIGH
+      description: "Cost price must not exceed selling price"
+
+# ============================================================
+# SALES — staging.sales_raw
+# ============================================================
+sales:
+  target_table: "staging.sales_raw"
+  source_id_column: "sale_id"
+  description: "Sales transaction data contract"
+
+  columns:
+    sale_id:
+      target_column: "source_id"
+      type: uuid
+      constraints:
+        - primary_key
+        - not_null
+      description: "Unique sale transaction identifier (UUID v4)"
+
+    customer_id:
+      type: uuid
+      constraints:
+        - not_null
+        - foreign_key:
+            entity: customers
+            column: customer_id
+      description: "Reference to customer UUID"
+
+    product_id:
+      type: uuid
+      constraints:
+        - not_null
+        - foreign_key:
+            entity: products
+            column: product_id
+      description: "Reference to product UUID"
+
+    product_name:
+      type: varchar
+      max_length: 255
+      constraints: []
+      nullable: true
+      description: "Denormalized product name"
+
+    category:
+      type: varchar
+      max_length: 100
+      constraints: []
+      nullable: true
+      description: "Denormalized product category"
+
+    quantity:
+      type: integer
+      constraints:
+        - not_null
+        - range:
+            min: 1
+            max: 10000
+      description: "Quantity of items sold"
+
+    unit_price:
+      type: decimal
+      precision: 12
+      scale: 2
+      constraints:
+        - not_null
+        - range:
+            min: 0.01
+            max: 99999.99
+      description: "Price per unit at time of sale"
+
+    total_amount:
+      type: decimal
+      precision: 12
+      scale: 2
+      constraints:
+        - not_null
+        - range:
+            min: 0.01
+            max: 9999999.99
+      description: "Total transaction amount"
+
+    discount_percent:
+      type: decimal
+      precision: 5
+      scale: 2
+      constraints:
+        - range:
+            min: 0
+            max: 100
+      nullable: true
+      description: "Discount percentage applied"
+
+    sale_date:
+      type: timestamp
+      format: "%Y-%m-%dT%H:%M:%S"
+      constraints:
+        - not_null
+        - not_future
+        - date_range:
+            min: "2020-01-01"
+            max: "2030-12-31"
+      description: "Date and time of sale"
+
+    payment_method:
+      type: varchar
+      max_length: 50
+      constraints:
+        - not_null
+        - enum: ["Credit Card", "Debit Card", "PayPal", "Bank Transfer", "Cash", "Crypto"]
+      description: "Payment method used"
+
+    store_location:
+      type: varchar
+      max_length: 200
+      constraints: []
+      nullable: true
+      coerce:
+        - trim
+      description: "Store location or 'Online Store'"
+
+    row_hash:
+      type: varchar
+      max_length: 64
+      constraints: []
+      nullable: true
+      description: "MD5 hash for incremental loading"
+
+  cross_validations:
+    - name: "total_equals_price_times_qty"
+      expression: "abs(total_amount - (unit_price * quantity)) < 0.02"
+      severity: HIGH
+      description: "Total must equal unit_price * quantity (within rounding tolerance)"

@@ -17,9 +17,10 @@ USER airflow
 COPY requirements.txt /opt/airflow/requirements.txt
 RUN pip install --no-cache-dir -r /opt/airflow/requirements.txt
 
-# Copy DAGs, scripts, and plugins
+# Copy DAGs, scripts, plugins, and config
 COPY dags/ /opt/airflow/dags/
 COPY scripts/ /opt/airflow/scripts/
 COPY plugins/ /opt/airflow/plugins/
+COPY config/ /opt/airflow/config/
 
 WORKDIR /opt/airflow

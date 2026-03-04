@@ -323,6 +323,181 @@ CREATE TABLE IF NOT EXISTS audit.data_quality_checks (
     pipeline_run_id INTEGER REFERENCES audit.pipeline_runs(run_id)
 );
 
+-- DQ Ingestion Validation Results (shift-left reports)
+CREATE TABLE IF NOT EXISTS audit.dq_validation_runs (
+    validation_id SERIAL PRIMARY KEY,
+    report_id VARCHAR(200) NOT NULL,
+    entity VARCHAR(100) NOT NULL,
+    total_rows INTEGER DEFAULT 0,
+    clean_rows INTEGER DEFAULT 0,
+    quarantined_rows INTEGER DEFAULT 0,
+    warnings_count INTEGER DEFAULT 0,
+    pass_rate DECIMAL(5, 2),
+    overall_status VARCHAR(20),
+    batch_halted BOOLEAN DEFAULT FALSE,
+    halt_reason TEXT,
+    report_json JSONB,
+    validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS audit.dq_violations (
+    violation_id SERIAL PRIMARY KEY,
+    validation_id INTEGER REFERENCES audit.dq_validation_runs(validation_id),
+    rule_name VARCHAR(200) NOT NULL,
+    rule_type VARCHAR(50),
+    severity VARCHAR(20),
+    entity VARCHAR(100),
+    column_name VARCHAR(100),
+    violation_count INTEGER DEFAULT 0,
+    sample_value TEXT,
+    expected TEXT,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_dq_validation_entity ON audit.dq_validation_runs(entity);
+CREATE INDEX IF NOT EXISTS idx_dq_validation_status ON audit.dq_validation_runs(overall_status);
+CREATE INDEX IF NOT EXISTS idx_dq_violations_severity ON audit.dq_violations(severity);
+CREATE INDEX IF NOT EXISTS idx_dq_violations_rule ON audit.dq_violations(rule_name);
+
+-- ============================================================
+-- Pre-Load Schema Validation Rejections
+-- ============================================================
+CREATE TABLE IF NOT EXISTS audit.pre_load_rejections (
+    rejection_id SERIAL PRIMARY KEY,
+    entity VARCHAR(100) NOT NULL,
+    source_data JSONB NOT NULL,
+    rejection_reasons TEXT[],
+    violated_rules TEXT[],
+    validation_report_id VARCHAR(200),
+    rejected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reviewed BOOLEAN DEFAULT FALSE,
+    reviewed_by VARCHAR(100),
+    reviewed_at TIMESTAMP,
+    resolution VARCHAR(50)  -- 'fixed', 'discarded', 'reprocessed'
+);
+
+CREATE TABLE IF NOT EXISTS audit.pre_load_validation_runs (
+    run_id SERIAL PRIMARY KEY,
+    report_id VARCHAR(200) NOT NULL,
+    entity VARCHAR(100) NOT NULL,
+    target_table VARCHAR(200),
+    total_rows INTEGER DEFAULT 0,
+    valid_rows INTEGER DEFAULT 0,
+    rejected_rows INTEGER DEFAULT 0,
+    pass_rate DECIMAL(5, 2),
+    total_violations INTEGER DEFAULT 0,
+    coercions_applied INTEGER DEFAULT 0,
+    batch_halted BOOLEAN DEFAULT FALSE,
+    halt_reason TEXT,
+    report_json JSONB,
+    validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_pre_load_rejections_entity ON audit.pre_load_rejections(entity);
+CREATE INDEX IF NOT EXISTS idx_pre_load_rejections_reviewed ON audit.pre_load_rejections(reviewed);
+CREATE INDEX IF NOT EXISTS idx_pre_load_validation_entity ON audit.pre_load_validation_runs(entity);
+CREATE INDEX IF NOT EXISTS idx_pre_load_validation_status ON audit.pre_load_validation_runs(batch_halted);
+
+-- UUID validation function for staging checks
+CREATE OR REPLACE FUNCTION is_valid_uuid(text) RETURNS BOOLEAN AS $$
+BEGIN
+    PERFORM $1::uuid;
+    RETURN TRUE;
+EXCEPTION WHEN OTHERS THEN
+    RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql IMMUTABLE;
+
+-- ============================================================
+-- Schema: quarantine (rejected/suspicious data)
+-- ============================================================
+CREATE SCHEMA IF NOT EXISTS quarantine;
+
+CREATE TABLE IF NOT EXISTS quarantine.customers_rejected (
+    id SERIAL PRIMARY KEY,
+    source_data JSONB NOT NULL,
+    rejection_reasons TEXT[],
+    rule_names TEXT[],
+    severity VARCHAR(20),
+    source_file VARCHAR(500),
+    quarantined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reviewed BOOLEAN DEFAULT FALSE,
+    reviewed_by VARCHAR(100),
+    reviewed_at TIMESTAMP,
+    resolution VARCHAR(50)  -- 'fixed', 'discarded', 'overridden'
+);
+
+CREATE TABLE IF NOT EXISTS quarantine.products_rejected (
+    id SERIAL PRIMARY KEY,
+    source_data JSONB NOT NULL,
+    rejection_reasons TEXT[],
+    rule_names TEXT[],
+    severity VARCHAR(20),
+    source_file VARCHAR(500),
+    quarantined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reviewed BOOLEAN DEFAULT FALSE,
+    reviewed_by VARCHAR(100),
+    reviewed_at TIMESTAMP,
+    resolution VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS quarantine.sales_rejected (
+    id SERIAL PRIMARY KEY,
+    source_data JSONB NOT NULL,
+    rejection_reasons TEXT[],
+    rule_names TEXT[],
+    severity VARCHAR(20),
+    source_file VARCHAR(500),
+    quarantined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    reviewed BOOLEAN DEFAULT FALSE,
+    reviewed_by VARCHAR(100),
+    reviewed_at TIMESTAMP,
+    resolution VARCHAR(50)
+);
+
+-- Quarantine summary view
+CREATE OR REPLACE VIEW analytics.quarantine_summary AS
+SELECT
+    'customers' AS entity,
+    COUNT(*) AS total_quarantined,
+    COUNT(*) FILTER (WHERE reviewed = FALSE) AS pending_review,
+    COUNT(*) FILTER (WHERE resolution = 'fixed') AS fixed,
+    COUNT(*) FILTER (WHERE resolution = 'discarded') AS discarded,
+    MIN(quarantined_at) AS earliest,
+    MAX(quarantined_at) AS latest
+FROM quarantine.customers_rejected
+UNION ALL
+SELECT
+    'products',
+    COUNT(*), COUNT(*) FILTER (WHERE reviewed = FALSE),
+    COUNT(*) FILTER (WHERE resolution = 'fixed'),
+    COUNT(*) FILTER (WHERE resolution = 'discarded'),
+    MIN(quarantined_at), MAX(quarantined_at)
+FROM quarantine.products_rejected
+UNION ALL
+SELECT
+    'sales',
+    COUNT(*), COUNT(*) FILTER (WHERE reviewed = FALSE),
+    COUNT(*) FILTER (WHERE resolution = 'fixed'),
+    COUNT(*) FILTER (WHERE resolution = 'discarded'),
+    MIN(quarantined_at), MAX(quarantined_at)
+FROM quarantine.sales_rejected;
+
+-- DQ Trends view
+CREATE OR REPLACE VIEW analytics.dq_trends AS
+SELECT
+    DATE(validated_at) AS validation_date,
+    entity,
+    COUNT(*) AS validation_runs,
+    AVG(pass_rate) AS avg_pass_rate,
+    SUM(total_rows) AS total_rows_processed,
+    SUM(quarantined_rows) AS total_quarantined,
+    COUNT(*) FILTER (WHERE batch_halted = TRUE) AS batches_halted
+FROM audit.dq_validation_runs
+GROUP BY DATE(validated_at), entity
+ORDER BY validation_date DESC;
+
 -- ============================================================
 -- Populate dim_date (2020-2030)
 -- ============================================================

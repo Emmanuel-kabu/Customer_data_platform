@@ -1,0 +1,51 @@
+product_id,product_name,category,sub_category,brand,unit_price,cost_price,supplier,stock_quantity,row_hash
+9696c7d6-5864-456e-802c-e30b7f6cf939,TechPro Smartphones Chair 854,Electronics,Smartphones,TechPro,1175.31,646.42,Rhodes PLC,114,25736b433dcbace344f38a84e6bedfb3
+32922573-6ded-4578-910b-ce9c262058c3,ByteForce Smartphones Better 323,Electronics,Smartphones,ByteForce,1777.4,977.57,Wagner Inc,15,242d8487fd9ac4e8f23670754b92356b
+d83e7810-f0c4-4aff-b2e5-af90b22f8954,DigitalMax Audio List 703,Electronics,Audio,DigitalMax,2281.53,1254.84,Pacheco-Smith,112,95abe95222bcca43fd5a093ad1e04161
+f4b655f0-01df-4e57-88aa-dcfd7ea8cdee,ElectraPrime Laptops Dinner 881,Electronics,Laptops,ElectraPrime,1442.35,793.29,Garcia-James,79,f305891cac06e7847b75246c5734a0ab
+1ee4d6dd-c109-4849-bc82-2b527ffb721e,SmartWave Tablets Machine 649,Electronics,Tablets,SmartWave,1132.5,622.88,Dudley Group,373,07a792d7d9e363824df7303946ab1b66
+b20ca52f-ac75-4d99-80f7-e6fcaf61324c,ByteForce Smartphones Value 982,Electronics,Smartphones,ByteForce,1249.8,687.39,Ray-Bush,316,2fcd1118c7d84d9c87e10d61369c5300
+dd4615f0-19a2-4b99-94f4-40d0c4aac6a6,DigitalMax Smartphones Early 987,Electronics,Smartphones,DigitalMax,1234.1,678.75,James Group,437,82ddeba3f0954cc6b67029b1e57a3f05
+c4bc865e-7624-4558-8583-98bcb64e46f1,DigitalMax Tablets Religious 373,Electronics,Tablets,DigitalMax,1565.45,861.0,"Zuniga, Wong and Lynch",107,0ecc4d0fd04e3539e8e3e9cc5e9e8fbb
+aea4d3b1-52af-4670-8ac5-dbd1e39176c7,ByteForce Laptops Hundred 376,Electronics,Laptops,ByteForce,1051.2,578.16,"Watts, Robinson and Nguyen",236,7252014228a4010e554a0af2fdeda991
+dd6916a7-257d-4c8b-b083-7f66800fad51,DigitalMax Smartphones Executive 167,Electronics,Smartphones,DigitalMax,180.4,99.22,Gentry PLC,205,fe1b69a9ada5dca5fc484d8afc527900
+642a80ef-c3a9-4254-b959-bdcf55a8cbbb,ClassicFit Kids Who 758,Clothing,Kids,ClassicFit,274.5,109.8,Thomas-Taylor,452,a48311794d79554a24cb08da204b1ed6
+12c64d2a-0d66-4f45-b8e8-4040bd8f4174,ElegantLine Formal Later 697,Clothing,Formal,ElegantLine,153.95,61.58,Cox-Osborn,299,52cf8b338c1216ab1850cf7c9c37311f
+bee39376-0e29-4f13-86a4-fa85ad0eda61,ElegantLine Women's Wear Anyone 981,Clothing,Women's Wear,ElegantLine,271.11,108.44,Hernandez and Sons,386,3d13a8d8552fab99a418ded54a16bd22
+07b04d14-d671-4651-894e-8363c4e7a999,ElegantLine Sportswear Pick 579,Clothing,Sportswear,ElegantLine,51.49,20.6,"King, Tran and Dunlap",195,5d204c0c8019a3df0bd0d5b5283ea755
+031e0b76-c0ba-4433-9ee6-f15875c289ee,ElegantLine Men's Wear Grow 214,Clothing,Men's Wear,ElegantLine,155.98,62.39,Graham-Chavez,328,4deb5370eb0c0ed4dbd807a5f6cc3f20
+eaf5e6b7-2b8c-4466-afc2-7379bb58b03a,ElegantLine Kids Born 991,Clothing,Kids,ElegantLine,110.64,44.26,"Evans, Fowler and Lynch",467,0957f0d9813aed9cd1558d7012105853
+1ca0b866-2c00-44ed-9f75-4082b1ebb4fa,TrendSet Women's Wear Start 643,Clothing,Women's Wear,TrendSet,101.69,40.68,George Group,488,928acb6286c187528de68f6f9d3bf63f
+b9f0f52f-cc05-4112-9f87-af3ca7eb1c6a,UrbanStyle Men's Wear Article 346,Clothing,Men's Wear,UrbanStyle,204.39,81.76,"Arroyo, Miller and Tucker",122,9ebf258d3906286f6fbf083566dcedbd
+b1ed41f1-d2ee-463f-83e8-76c6e55cbf3e,ElegantLine Men's Wear May 662,Clothing,Men's Wear,ElegantLine,83.16,33.26,Baker PLC,337,fef3817ab27f2a895d1a54cf5d3ac512
+08bf5d7b-d216-4a62-aed4-4d5e55c1d4ec,ClassicFit Sportswear Road 305,Clothing,Sportswear,ClassicFit,295.96,118.38,"Collins, Carney and Santos",373,c06d9b518282c2cd37447f2d40bea06d
+cbbc13eb-4add-410e-b251-b62db751522f,NaturalHome Garden Down 165,Home & Garden,Garden,NaturalHome,476.15,238.07,Smith-Spencer,126,76c688333af12f78dedd5da01916b961
+4e8965df-164f-4a03-ba68-ad1b5b2ffa5c,GardenPro Lighting Program 160,Home & Garden,Lighting,GardenPro,21.9,10.95,Jones Inc,362,ce07f66d602c66c5066240edd3bf01bb
+5bd4e3fe-da13-4a38-a785-7c9b3bb3495d,HomeComfort Decor Relationship 597,Home & Garden,Decor,HomeComfort,540.3,270.15,Ryan Ltd,142,010a9bd13c883e1b037fdb3a900ae99a
+8188ddfb-9e86-4a31-a68e-71a5c65d5855,NaturalHome Lighting Material 926,Home & Garden,Lighting,NaturalHome,498.31,249.16,Lee-Davis,401,e7ca23cc7696b58222cf546fb6fc9c91
+01d7b10a-8447-4a03-aa84-2477902b87bd,CozyLiving Garden Treat 846,Home & Garden,Garden,CozyLiving,447.52,223.76,Nunez Ltd,239,b24d844a34a8a5d0d1de313f95a5b5d4
+ad8faca4-1151-4101-a8c2-101978a73b12,HomeComfort Furniture Such 982,Home & Garden,Furniture,HomeComfort,426.93,213.47,Wright and Sons,173,590a5c7dd9d393a8925a5af73fe74166
+f06974b1-a1cd-4127-b7b9-257d8a72d106,ModernSpace Lighting Family 573,Home & Garden,Lighting,ModernSpace,157.54,78.77,Baxter Inc,93,b5421a38cedb7dac83036089ce50c8a8
+ef8f527d-3d8e-4ae9-a238-a4f1c10364d7,NaturalHome Garden Now 956,Home & Garden,Garden,NaturalHome,114.6,57.3,Novak and Sons,333,7786ed81e270cfdf1325d9eb744fb142
+d430509a-d6a2-4dcb-8c8a-703719aaab8f,ModernSpace Kitchen Treatment 510,Home & Garden,Kitchen,ModernSpace,511.61,255.81,Martin Inc,109,38f822bd7164c4b9077e3e717193e489
+3626ddf7-e965-4c9f-8f84-03a088a5fc89,CozyLiving Garden Land 813,Home & Garden,Garden,CozyLiving,962.58,481.29,"Cowan, Peters and Higgins",146,8af4a1fd47e34809926e4343025fd5bc
+128c4bc0-5443-4658-8b6c-0bed91254636,KnowledgeBase Non-Fiction Article 693,Books & Media,Non-Fiction,KnowledgeBase,41.27,14.44,"Daniels, Adkins and Brown",495,4c6ba9d91ba62991f486694ecf111f27
+dbcef023-6c13-4b3b-8d73-05a8d682f28d,LearnPro Digital Art 620,Books & Media,Digital,LearnPro,68.67,24.03,York Inc,80,752c5acbe3ec6f7017af6de79b764649
+b7da5e91-12b3-4e0b-8928-8b7d5540f064,PageTurner Digital Year 683,Books & Media,Digital,PageTurner,34.51,12.08,Riley Inc,61,d86c958bccad5bd76807ba6e9ed211d8
+c266a911-409a-4702-92bd-8272f0091ff0,PageTurner Digital Other 635,Books & Media,Digital,PageTurner,57.84,20.24,Donovan-Harris,298,3f05776808a8b27d8e5ea15a67a22e02
+9c37b6cc-d9bd-4a60-ab54-3113e75c477b,KnowledgeBase Educational Remain 760,Books & Media,Educational,KnowledgeBase,37.5,13.12,Bryant-Hickman,67,7608a6270f06385af01dabd0a5c86564
+7bbfe07a-9d1f-4b94-b228-01fb034e1d90,PageTurner Fiction Black 175,Books & Media,Fiction,PageTurner,62.79,21.98,"Lewis, Baker and Mahoney",288,517cae23e46dfc330283bf7dc18e5595
+c5483458-3971-4b1a-8b67-30bfb32373a7,KnowledgeBase Fiction Left 953,Books & Media,Fiction,KnowledgeBase,51.36,17.98,"Warner, Carr and Archer",80,1573e633b49ac3742e94bf2d4b2a2b12
+c78f8254-8412-4871-bee6-d6ab2e60f014,PageTurner Digital Record 206,Books & Media,Digital,PageTurner,74.38,26.03,Baker Inc,477,1e7319ad2d82e27654e8e1a5345157e5
+a3c706c7-7056-44cf-a510-29dcfcd3cbb8,KnowledgeBase Digital Develop 834,Books & Media,Digital,KnowledgeBase,38.36,13.43,Harris-Walters,309,686fe1d926713444205322cd6377e1eb
+0b0a1225-524b-4fba-9bb7-5ba086b54348,MediaHub Educational Whatever 966,Books & Media,Educational,MediaHub,66.32,23.21,Davis Group,463,b05d2af6b12dd0fa9be3fc91700abd1b
+c104ae85-7fdd-4a16-b044-1aa0dbd5c1aa,GlowUp Supplements Everybody 265,Health & Beauty,Supplements,GlowUp,156.5,70.42,"Ramos, Thornton and Hoffman",326,4c3db5c54221565031bc24dc8a7975b0
+2fb00e02-d010-41a0-8578-38ee2f5a2be1,GlowUp Skincare Also 954,Health & Beauty,Skincare,GlowUp,185.19,83.34,Aguilar-Hernandez,279,89dec3e436b507e6442026fecd148ab3
+a799c4bb-97bb-4b37-aa28-4d3c8e21ad62,GlowUp Haircare Worker 915,Health & Beauty,Haircare,GlowUp,87.46,39.36,Nolan and Sons,460,af1d3900955d7350b65c0ed00eebba47
+fe78f5db-e1bc-4181-abb3-c8d970e0aa94,GlowUp Haircare Usually 995,Health & Beauty,Haircare,GlowUp,99.99,45.0,Dickson-Brady,286,00478353ee09b59bddd659c787b63cac
+dff5233a-a1e0-4b72-86c8-86cfa7530d23,VitalLife Haircare Country 854,Health & Beauty,Haircare,VitalLife,54.52,24.53,Patton-Jenkins,12,33bd4e2681213ec8392b3dff53de6b34
+a1a4ecba-ebe7-4d29-9ddd-5e6e86734658,PureCare Haircare Idea 993,Health & Beauty,Haircare,PureCare,49.89,22.45,Garrison and Sons,55,b6f54481193eed91a46d6a76309ee6db
+8981ea4c-95de-4c48-ae40-092f121dd50a,FitWell Haircare Stuff 992,Health & Beauty,Haircare,FitWell,98.39,44.28,Walker Ltd,420,5a0a9f19cb64e197d07849683c602077
+148d8822-756a-43a2-b563-3c1d6d469a9a,FitWell Haircare Available 891,Health & Beauty,Haircare,FitWell,93.35,42.01,Bell-Hicks,442,d357062c1031bd4e59ac77e0a052d5b2
+1074f464-5bce-4438-b708-92d104f45ec1,PureCare Personal Care Every 282,Health & Beauty,Personal Care,PureCare,16.14,7.26,"Estes, Baker and Rodriguez",449,b1a6406853047ce196dfb1d4e9a2d38e
+79e6a324-5946-4b59-816b-2ac7ce2cd246,PureCare Fitness Police 623,Health & Beauty,Fitness,PureCare,195.4,87.93,Cruz PLC,223,9f5051f6c126da16301e521093bad2dd

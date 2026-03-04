@@ -108,7 +108,8 @@ def incremental_load_dimension(
     dim_table: str,
     business_key: str,
     hash_columns: List[str],
-    attribute_columns: List[str]
+    attribute_columns: List[str],
+    staging_key: str = None
 ) -> Tuple[int, int]:
     """
     Perform SCD Type 2 incremental load from staging to dimension table.
@@ -118,13 +119,15 @@ def incremental_load_dimension(
         conn: Database connection
         staging_table: Source staging table
         dim_table: Target dimension table
-        business_key: Business key column name
+        business_key: Business key column name in the dimension table
         hash_columns: Columns used for hash computation
         attribute_columns: Columns to load
+        staging_key: Business key column name in staging (defaults to business_key)
 
     Returns:
         Tuple of (records_inserted, records_updated)
     """
+    stg_key = staging_key or business_key
     cursor = conn.cursor(cursor_factory=RealDictCursor)
 
     # Step 1: Get existing current records with their hashes
@@ -136,7 +139,7 @@ def incremental_load_dimension(
     existing = {row[business_key]: row["row_hash"] for row in cursor.fetchall()}
 
     # Step 2: Get staging records
-    cols = ", ".join([business_key] + attribute_columns + ["row_hash"])
+    cols = ", ".join([stg_key] + attribute_columns + ["row_hash"])
     cursor.execute(f"SELECT {cols} FROM {staging_table}")
     staging_rows = cursor.fetchall()
 
@@ -144,13 +147,13 @@ def incremental_load_dimension(
     records_updated = 0
 
     for row in staging_rows:
-        bk = row[business_key]
+        bk = row[stg_key]
         new_hash = row["row_hash"]
 
         if bk not in existing:
             # New record - insert
             col_list = [business_key] + attribute_columns + ["row_hash", "is_current", "effective_date"]
-            val_list = [row[business_key]] + [row.get(c) for c in attribute_columns] + \
+            val_list = [row[stg_key]] + [row.get(c) for c in attribute_columns] + \
                        [new_hash, True, datetime.now()]
             placeholders = ", ".join(["%s"] * len(col_list))
             cols_str = ", ".join(col_list)
@@ -172,7 +175,7 @@ def incremental_load_dimension(
             """, (datetime.now(), datetime.now(), bk))
 
             col_list = [business_key] + attribute_columns + ["row_hash", "is_current", "effective_date"]
-            val_list = [row[business_key]] + [row.get(c) for c in attribute_columns] + \
+            val_list = [row[stg_key]] + [row.get(c) for c in attribute_columns] + \
                        [new_hash, True, datetime.now()]
             placeholders = ", ".join(["%s"] * len(col_list))
             cols_str = ", ".join(col_list)
@@ -268,7 +271,8 @@ def load_fact_table(conn, staging_table: str, fact_table: str,
             row.get("store_location"),
             row.get("row_hash")
         ))
-        records_inserted += 1
+        if cursor.rowcount > 0:
+            records_inserted += 1
 
     conn.commit()
     cursor.close()

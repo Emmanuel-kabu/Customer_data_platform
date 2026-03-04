@@ -6,6 +6,7 @@ Tests: data generation, CSV conversion, hashing, MinIO upload.
 import os
 import sys
 import pytest
+import uuid
 from unittest.mock import patch, MagicMock
 from io import StringIO
 import csv
@@ -79,10 +80,11 @@ class TestGenerateProducts:
                 assert field in product, f"Missing field: {field}"
 
     def test_product_id_format(self):
-        """Product IDs should follow PROD-XXXX format."""
+        """Product IDs should be valid UUID v4 strings."""
         products = generate_products(5)
         for product in products:
-            assert product["product_id"].startswith("PROD-")
+            parsed = uuid.UUID(product["product_id"])
+            assert parsed.version == 4
 
     def test_price_is_positive(self):
         """Prices should be positive values."""
@@ -125,10 +127,11 @@ class TestGenerateCustomers:
                 assert field in customer, f"Missing field: {field}"
 
     def test_customer_id_format(self):
-        """Customer IDs should follow CUST-XXXXX format."""
+        """Customer IDs should be valid UUID v4 strings."""
         customers = generate_customers(5)
         for customer in customers:
-            assert customer["customer_id"].startswith("CUST-")
+            parsed = uuid.UUID(customer["customer_id"])
+            assert parsed.version == 4
 
     def test_unique_emails(self):
         """All customers should have unique emails."""
@@ -167,12 +170,13 @@ class TestGenerateSales:
                 assert field in sale, f"Missing field: {field}"
 
     def test_sale_id_format(self):
-        """Sale IDs should follow SALE-XXXXXX format."""
+        """Sale IDs should be valid UUID v4 strings."""
         products = generate_products(5)
         customers = generate_customers(5)
         sales = generate_sales(5, customers, products)
         for sale in sales:
-            assert sale["sale_id"].startswith("SALE-")
+            parsed = uuid.UUID(sale["sale_id"])
+            assert parsed.version == 4
 
     def test_valid_customer_references(self):
         """Sales should reference valid customer IDs."""

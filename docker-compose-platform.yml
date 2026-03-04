@@ -31,6 +31,7 @@ x-airflow-common: &airflow-common
     - ./scripts:/opt/airflow/scripts
     - ./data:/opt/airflow/data
     - ./plugins:/opt/airflow/plugins
+    - ./config:/opt/airflow/config
     - ./tests:/opt/airflow/tests
     - airflow_logs:/opt/airflow/logs
   depends_on:
@@ -108,6 +109,7 @@ services:
       mc mb cdp/raw-data --ignore-existing;
       mc mb cdp/processed-data --ignore-existing;
       mc mb cdp/archive-data --ignore-existing;
+      mc mb cdp/quarantine-data --ignore-existing;
       mc anonymous set download cdp/raw-data;
       mc event add cdp/raw-data arn:minio:sqs::_:webhook --event put --ignore-existing || true;
       echo 'MinIO buckets initialized successfully';
@@ -241,6 +243,7 @@ services:
     volumes:
       - ./data:/app/data
       - ./scripts:/app/scripts
+      - ./config:/app/config
     networks:
       - cdp-network
 

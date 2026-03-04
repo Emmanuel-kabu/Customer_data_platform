@@ -12,8 +12,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Copy scripts
+# Copy scripts, config, and data
 COPY scripts/ /app/scripts/
+COPY config/ /app/config/
 COPY data/ /app/data/
 
 # Run data generator
