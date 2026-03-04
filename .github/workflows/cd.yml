@@ -15,6 +15,7 @@ on:
           - staging
 
 env:
+  COMPOSE_FILE: docker-compose-platform.yml
   COMPOSE_PROJECT_NAME: cdp-test
   POSTGRES_USER: cdp_admin
   POSTGRES_PASSWORD: cdp_secure_pass_2026
