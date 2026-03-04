@@ -7,7 +7,6 @@ import os
 import sys
 import pytest
 from unittest.mock import patch, MagicMock, PropertyMock
-from io import BytesIO
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 
@@ -19,7 +18,7 @@ class TestMinIOClientInit:
     def test_initializes_with_env_vars(self, mock_minio, mock_env_vars):
         """Should initialize using environment variables."""
         from minio_helper import MinIOClient
-        client = MinIOClient()
+        MinIOClient()
         mock_minio.assert_called_once_with(
             "localhost:9000",
             access_key="test_user",
@@ -31,7 +30,7 @@ class TestMinIOClientInit:
     def test_initializes_with_custom_params(self, mock_minio):
         """Should accept custom connection parameters."""
         from minio_helper import MinIOClient
-        client = MinIOClient(
+        MinIOClient(
             endpoint="custom:9000",
             access_key="custom_key",
             secret_key="custom_secret"

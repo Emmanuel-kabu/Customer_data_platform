@@ -5,7 +5,6 @@ Tests: notification sending, callbacks, message formatting.
 
 import os
 import sys
-import pytest
 from unittest.mock import patch, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "plugins"))
