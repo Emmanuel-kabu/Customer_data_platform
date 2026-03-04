@@ -5,9 +5,7 @@ Validates DAG structure, import, schedule, and task dependencies.
 
 import os
 import sys
-import pytest
-from unittest.mock import patch, MagicMock
-from datetime import timedelta
+from unittest.mock import MagicMock
 
 # Mock airflow modules before importing DAGs
 sys.modules["airflow"] = MagicMock()

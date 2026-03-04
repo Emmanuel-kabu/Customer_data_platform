@@ -9,13 +9,12 @@ This DAG validates end-to-end data integrity.
 Schedule: Every 12 hours
 """
 
-import os
 import sys
 import logging
 from datetime import datetime, timedelta
 
 from airflow import DAG
-from airflow.operators.python import PythonOperator, BranchPythonOperator
+from airflow.operators.python import PythonOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.utils.dates import days_ago
 
@@ -227,7 +226,7 @@ def validate_data_flow(**context):
 
     if errors:
         send_slack_notification(
-            message=f"Data flow validation issues:\n" + "\n".join(f"• {e}" for e in errors),
+            message="Data flow validation issues:\n" + "\n".join(f"• {e}" for e in errors),
             status="warning",
             dag_id="data_flow_validation"
         )

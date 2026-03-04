@@ -5,9 +5,7 @@ Tests: data generation, CSV conversion, hashing, MinIO upload.
 
 import os
 import sys
-import pytest
 import uuid
-from unittest.mock import patch, MagicMock
 from io import StringIO
 import csv
 

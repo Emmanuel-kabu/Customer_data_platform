@@ -5,8 +5,7 @@ Tests: quality checks, row counts, null validation, referential integrity.
 
 import os
 import sys
-import pytest
-from unittest.mock import patch, MagicMock, call
+from unittest.mock import patch, MagicMock
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "plugins"))
 

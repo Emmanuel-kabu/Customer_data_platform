@@ -8,7 +8,7 @@ import csv
 import hashlib
 import logging
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime
 from io import StringIO
 
 from faker import Faker
@@ -255,7 +255,6 @@ def main():
         logger.info(f"DQ report saved locally: {report_path}/dq_report_{timestamp}.json")
 
         # Also save clean data locally as backup
-        from dq_rules_engine import DataQualityRulesEngine
         for entity_name, entity_data in [("products", products), ("customers", customers), ("sales", sales)]:
             csv_data = dict_list_to_csv(entity_data, entity_name)
             save_locally(csv_data, f"/app/data/{entity_name}/{entity_name}_{timestamp}.csv")

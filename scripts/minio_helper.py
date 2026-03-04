@@ -5,7 +5,7 @@ MinIO Helper - Utilities for interacting with MinIO object storage.
 import os
 import logging
 from io import BytesIO
-from typing import List, Optional
+from typing import List
 
 from minio import Minio
 from minio.error import S3Error

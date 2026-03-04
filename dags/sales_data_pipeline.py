@@ -15,20 +15,18 @@ Retries: 3 with exponential backoff
 
 import os
 import csv
-import hashlib
 import logging
 import re
 import time
 from datetime import datetime, timedelta
 from io import StringIO
-from typing import List, Dict
+from typing import Dict
 
 from airflow import DAG
 from airflow.exceptions import AirflowSkipException
 from airflow.operators.python import PythonOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.utils.dates import days_ago
-from airflow.models import Variable
 
 import sys
 sys.path.insert(0, "/opt/airflow/scripts")
@@ -36,7 +34,7 @@ sys.path.insert(0, "/opt/airflow/plugins")
 
 from minio_helper import MinIOClient
 from db_helper import (
-    get_db_connection, get_conn_params, compute_row_hash,
+    get_db_connection, get_conn_params,
     bulk_insert_staging, incremental_load_dimension,
     load_fact_table, log_pipeline_run
 )
@@ -167,9 +165,9 @@ def validate_before_load(**context):
     - Batch-level rejection thresholds
     """
     start_time = time.time()
-    logger.info("="*60)
+    logger.info("=" * 60)
     logger.info("PRE-LOAD SCHEMA & DATA VALIDATION")
-    logger.info("="*60)
+    logger.info("=" * 60)
 
     extracted_data = context["ti"].xcom_pull(
         key="extracted_data", task_ids="extract_from_minio"
@@ -238,7 +236,7 @@ def validate_before_load(**context):
             length=len(report_bytes),
             content_type="application/json",
         )
-        logger.info(f"Schema validation report saved to MinIO")
+        logger.info("Schema validation report saved to MinIO")
     except Exception as e:
         logger.warning(f"Could not save validation report to MinIO: {e}")
 

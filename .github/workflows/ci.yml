@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pytest pytest-cov pytest-mock faker minio \
-            psycopg2-binary requests boto3 pandas numpy
+            psycopg2-binary requests boto3 pandas numpy pyyaml
 
       - name: Run unit tests
         run: |
@@ -144,13 +144,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validate docker-compose.yml syntax
+        env:
+          AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://cdp_admin:cdp_secure_pass_2026@postgres:5432/customer_data_platform
+          AIRFLOW__CORE__FERNET_KEY: test_fernet_key_for_ci_validation_only_000=
         run: |
-          docker compose -f docker-compose.yml config --quiet
+          docker compose -f docker-compose-platform.yml config --quiet
           echo "✅ Docker Compose syntax is valid"
 
       - name: Check service definitions
+        env:
+          AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://cdp_admin:cdp_secure_pass_2026@postgres:5432/customer_data_platform
+          AIRFLOW__CORE__FERNET_KEY: test_fernet_key_for_ci_validation_only_000=
         run: |
-          services=$(docker compose -f docker-compose.yml config --services)
+          services=$(docker compose -f docker-compose-platform.yml config --services)
           echo "Services found:"
           echo "$services"
 
@@ -182,7 +188,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install pytest pytest-cov pytest-mock faker minio \
-            psycopg2-binary requests boto3 pandas numpy
+            psycopg2-binary requests boto3 pandas numpy pyyaml
 
       - name: Run integration tests
         run: |

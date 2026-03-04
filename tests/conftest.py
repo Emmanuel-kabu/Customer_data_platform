@@ -2,9 +2,8 @@
 conftest.py - Shared fixtures for all test modules.
 """
 
-import os
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 
 @pytest.fixture

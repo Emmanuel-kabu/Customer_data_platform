@@ -11,11 +11,9 @@ Two-tier architecture:
 
 import json
 import logging
-from datetime import datetime
-from typing import Optional, List, Dict
+from typing import Optional
 
 import psycopg2
-from psycopg2.extras import RealDictCursor
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +101,7 @@ class DataQualityChecker:
         )
 
     def check_referential_integrity(self, fact_table: str, fact_column: str,
-                                     dim_table: str, dim_column: str) -> bool:
+                                    dim_table: str, dim_column: str) -> bool:
         """Check referential integrity between fact and dimension tables."""
         return self.run_check(
             check_name=f"ref_integrity_{fact_table}_{fact_column}",

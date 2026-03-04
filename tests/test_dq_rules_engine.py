@@ -8,7 +8,6 @@ import sys
 import uuid
 import pytest
 from datetime import datetime, timedelta
-from unittest.mock import patch, MagicMock
 
 # Fixed UUIDs for deterministic tests
 CUST_UUID_1 = "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"

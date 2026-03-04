@@ -4,7 +4,6 @@ Sends pipeline status alerts to Slack channels.
 """
 
 import os
-import json
 import logging
 from datetime import datetime
 
@@ -44,13 +43,6 @@ def send_slack_notification(
         "failure": ":x:",
         "warning": ":warning:",
         "info": ":information_source:"
-    }
-
-    status_color = {
-        "success": "#36a64f",
-        "failure": "#ff0000",
-        "warning": "#ffcc00",
-        "info": "#439FE0"
     }
 
     emoji = status_emoji.get(status, ":bell:")
